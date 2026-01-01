@@ -1,18 +1,19 @@
-Event Management Dashboard - README
+Event Management Dashboard -
+https://azrierafie.github.io/event_management/
+Demo account email: admin@example.com 
+demo password : admin123
+
 📋 Project Overview
 This Event Management Dashboard is a complete web application interface developed as an individual project for IMS566: Advanced Web Design Development and Content Management. The application meets all requirements specified in the project guidelines with a focus on event management functionality.
 🎯 Project Objective
 This project applies theories and technical exercises learned in lecture sessions to construct a professional web application interface for event management. The application demonstrates proficiency in front-end development, responsive design, and modern web technologies.
 🛠️ Technical Implementation
 index.html - Login Page
-
 dashboard.html - Dashboard with Statistics
-
 events.html - Data View 1: Events Management
-
 calendar.html - Data View 2: Calendar View
-
 event-details.html - Profile/Details Page
+
 Front-End Framework: Bootstrap 5.3.2
 The project extensively utilizes Bootstrap 5.3.2 for:
 
@@ -23,6 +24,7 @@ html
   <div class="col-md-4">Card 2</div>
   <div class="col-md-4">Card 3</div>
 </div>
+
 Bootstrap Components Used:
 Navigation Bar: Consistent menu across all pages
 
