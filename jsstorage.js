@@ -1,3 +1,8 @@
+/**
+ * Event Storage Class - FIXED VERSION
+ * Handles all localStorage operations for events
+ */
+
 class EventStorage {
     constructor() {
         this.STORAGE_KEY = 'eventDashboardEvents';
@@ -34,7 +39,7 @@ class EventStorage {
                         name: 'Family Dinner',
                         date: '2026-01-28',
                         location: 'UiTM Hotel',
-                        status: 'Upcoming',
+                        status: 'Completed',
                         createdAt: new Date().toISOString()
                     },
                     {
@@ -212,15 +217,24 @@ class EventStorage {
 
     // Get upcoming events (future dates)
     getUpcomingEvents() {
-        try {
-            const events = this.getAllEvents();
-            const today = new Date().toISOString().split('T')[0];
-            return events.filter(event => event.date >= today);
-        } catch (error) {
-            console.error('Error getting upcoming events:', error);
-            return [];
-        }
+    try {
+        const events = this.getAllEvents();
+
+        // Only events with status "Upcoming"
+        const upcomingEvents = events.filter(e => e.status === "Upcoming");
+
+        // If you ALSO want only future dates, use this instead:
+        // const today = new Date().toISOString().split("T")[0];
+        // const upcomingEvents = events.filter(e =>
+        //     e.status === "Upcoming" && e.date >= today
+        // );
+
+        return upcomingEvents;
+    } catch (error) {
+        console.error("Error getting upcoming events:", error);
+        return [];
     }
+}
 
     // Get completed events (past dates or status completed)
     getCompletedEvents() {
@@ -236,21 +250,21 @@ class EventStorage {
 
     // Get events count by status
     getEventCounts() {
-        try {
-            const events = this.getAllEvents();
-            const today = new Date().toISOString().split('T')[0];
-            
-            const total = events.length;
-            const upcoming = events.filter(e => e.date >= today).length;
-            const completed = events.filter(e => e.date < today || e.status === 'Completed').length;
-            
-            console.log('Event counts:', { total, upcoming, completed });
-            return { total, upcoming, completed };
-        } catch (error) {
-            console.error('Error getting event counts:', error);
-            return { total: 0, upcoming: 0, completed: 0 };
-        }
+         try {
+        const events = this.getAllEvents();
+
+        const total = events.length;
+        const upcoming = events.filter(e => e.status === "Upcoming").length;
+        const completed = events.filter(e => e.status === "Completed").length;
+
+        console.log("Event counts (by status only):", { total, upcoming, completed });
+
+        return { total, upcoming, completed };
+    } catch (error) {
+        console.error("Error getting event counts:", error);
+        return { total: 0, upcoming: 0, completed: 0 };
     }
+}
 
     // Get events for specific month
     getEventsByMonth(year, month) {
