@@ -1,8 +1,3 @@
-/**
- * Event Storage Class - FIXED VERSION
- * Handles all localStorage operations for events
- */
-
 class EventStorage {
     constructor() {
         this.STORAGE_KEY = 'eventDashboardEvents';
@@ -29,7 +24,7 @@ class EventStorage {
                     {
                         id: 2,
                         name: 'Final Test',
-                        date: '2026-02-24',
+                        date: '2025-02-24',
                         location: 'Dewan Seminar',
                         status: 'Upcoming',
                         createdAt: new Date().toISOString()
@@ -37,9 +32,9 @@ class EventStorage {
                     {
                         id: 3,
                         name: 'Family Dinner',
-                        date: '2026-01-01',
+                        date: '2026-01-28',
                         location: 'UiTM Hotel',
-                        status: 'Completed',
+                        status: 'Upcoming',
                         createdAt: new Date().toISOString()
                     },
                     {
@@ -321,5 +316,4 @@ if (eventStorage.testLocalStorage()) {
 } else {
     console.error('✗ localStorage test failed - the application may not work properly');
     alert('Warning: localStorage is not available. Events may not be saved.');
-
 }
