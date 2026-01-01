@@ -29,7 +29,7 @@ class EventStorage {
                     {
                         id: 2,
                         name: 'Final Test',
-                        date: '2025-02-24',
+                        date: '2026-02-24',
                         location: 'Dewan Seminar',
                         status: 'Upcoming',
                         createdAt: new Date().toISOString()
@@ -321,4 +321,5 @@ if (eventStorage.testLocalStorage()) {
 } else {
     console.error('✗ localStorage test failed - the application may not work properly');
     alert('Warning: localStorage is not available. Events may not be saved.');
+
 }
