@@ -238,15 +238,18 @@ class EventStorage {
 
     // Get completed events (past dates or status completed)
     getCompletedEvents() {
-        try {
-            const events = this.getAllEvents();
-            const today = new Date().toISOString().split('T')[0];
-            return events.filter(event => event.date < today || event.status === 'Completed');
-        } catch (error) {
-            console.error('Error getting completed events:', error);
-            return [];
-        }
+    try {
+        const events = this.getAllEvents();
+
+        // STRICT: only events with status "Completed"
+        const completedEvents = events.filter(e => e.status === "Completed");
+
+        return completedEvents;
+    } catch (error) {
+        console.error("Error getting completed events:", error);
+        return [];
     }
+}
 
     // Get events count by status
     getEventCounts() {
