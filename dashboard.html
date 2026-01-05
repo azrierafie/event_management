@@ -5,6 +5,102 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
+    /* Stat Cards Styling */
+    .stat-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      position: relative;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      height: 100%;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .stat-card-body {
+      padding: 35px 30px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .stat-card-body h5 {
+      color: rgba(50, 50, 50, 0.95);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .stat-card-body h5 i {
+      font-size: 1.4rem;
+    }
+    
+    .stat-card-body h2 {
+      color: rgba(30, 30, 30, 0.95);
+      font-size: 4rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      line-height: 1;
+    }
+    
+    .stat-card-body small {
+      color: rgba(80, 80, 80, 0.85);
+      font-size: 0.95rem;
+      display: block;
+      font-weight: 500;
+    }
+    
+    .stat-indicator {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 5px;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px 10px 0 0;
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover .stat-indicator {
+      height: 7px;
+      width: 80px;
+    }
+    
+    .stat-card-total .stat-indicator {
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .stat-card-upcoming .stat-indicator {
+      background: linear-gradient(90deg, #06d6a0 0%, #00b896 100%);
+    }
+    
+    .stat-card-completed .stat-indicator {
+      background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .stat-card-cancelled .stat-indicator {
+      background: linear-gradient(90deg, #ff6b9d 0%, #ef476f 100%);
+    }
+    
+    .stat-card-postponed .stat-indicator {
+      background: linear-gradient(90deg, #ffa726 0%, #ff8c00 100%);
+    }
+    
     .clickable-card {
       cursor: pointer;
       transition: transform 0.2s;
@@ -13,8 +109,253 @@
       transform: translateY(-5px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
     }
+    
+    .chart-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      padding: 0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      margin-top: 30px;
+    }
+    
+    .chart-header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 20px 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .chart-header h5 {
+      color: white;
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .chart-body {
+      padding: 40px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .chart-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+    }
+    
+    .chart-canvas-wrapper {
+      flex: 0 0 400px;
+      height: 400px;
+      position: relative;
+    }
+    
+    .chart-legend-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 400px;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      padding: 18px 25px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.95);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .legend-item:hover {
+      transform: translateX(10px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 1);
+    }
+    
+    .legend-color {
+      width: 35px;
+      height: 35px;
+      border-radius: 8px;
+      margin-right: 20px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      flex-shrink: 0;
+    }
+    
+    .legend-text {
+      flex: 1;
+    }
+    
+    .legend-label {
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #2d3748;
+      margin-bottom: 4px;
+    }
+    
+    .legend-count {
+      color: #718096;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    
+    @media (max-width: 992px) {
+      .chart-wrapper {
+        flex-direction: column;
+        gap: 40px;
+      }
+      
+      .chart-canvas-wrapper {
+        flex: 0 0 350px;
+        height: 350px;
+      }
+      
+      .chart-legend-wrapper {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .chart-canvas-wrapper {
+        flex: 0 0 300px;
+        height: 300px;
+      }
+      
+      .chart-body {
+        padding: 30px 20px;
+      }
+      
+      .chart-wrapper {
+        gap: 30px;
+      }
+    }
+    
+    /* Quick Actions Styling */
+    .quick-actions-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      padding: 0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      margin-top: 30px;
+    }
+    
+    .quick-actions-header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 20px 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .quick-actions-header h5 {
+      color: white;
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .quick-actions-body {
+      padding: 40px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .quick-action-btn {
+      width: 100%;
+      padding: 18px 25px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      color: white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .quick-action-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+      color: white;
+    }
+    
+    .quick-action-btn i {
+      font-size: 1.3rem;
+    }
+    
+    .btn-add {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .btn-add:hover {
+      background: linear-gradient(135deg, #5568d3 0%, #63398b 100%);
+    }
+    
+    .btn-all {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .btn-all:hover {
+      background: linear-gradient(135deg, #3d96e7 0%, #00d9e5 100%);
+    }
+    
+    .btn-upcoming {
+      background: linear-gradient(135deg, #06d6a0 0%, #00b896 100%);
+    }
+    
+    .btn-upcoming:hover {
+      background: linear-gradient(135deg, #05bd8d 0%, #009f7d 100%);
+    }
+    
+    .btn-completed {
+      background: linear-gradient(135deg, #a8a8a8 0%, #6c757d 100%);
+    }
+    
+    .btn-completed:hover {
+      background: linear-gradient(135deg, #8f8f8f 0%, #5a6268 100%);
+    }
+    
+    .btn-cancelled {
+      background: linear-gradient(135deg, #ff6b9d 0%, #ef476f 100%);
+    }
+    
+    .btn-cancelled:hover {
+      background: linear-gradient(135deg, #e65584 0%, #d63f62 100%);
+    }
+    
+    .btn-postponed {
+      background: linear-gradient(135deg, #ffa726 0%, #ff8c00 100%);
+    }
+    
+    .btn-postponed:hover {
+      background: linear-gradient(135deg, #e68f1f 0%, #e67d00 100%);
+    }
+    
+    @media (max-width: 768px) {
+      .quick-actions-body {
+        padding: 30px 20px;
+      }
+      
+      .quick-action-btn {
+        padding: 16px 20px;
+        font-size: 1rem;
+      }
+    }
   </style>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </head>
 <body>
 
@@ -23,40 +364,87 @@
   <div>
     <a href="dashboard.html" class="text-white me-3">Dashboard</a>
     <a href="events.html" class="text-white me-3">Events</a>
-    <a href="calendar.html" class="text-white me-3">Calendar</a> <!-- TAMBAH INI -->
+    <a href="calendar.html" class="text-white me-3">Calendar</a>
     <a href="index.html" class="text-white">Logout</a>
   </div>
 </nav>
 
 <div class="container mt-4">
-  <h3>Dashboard Overview</h3>
+  <h3 style="background: linear-gradient(45deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; font-size: 2rem;">Dashboard Overview</h3>
   
   <!-- STATISTICS CARDS -->
-  <div class="row mt-3">
-    <div class="col-md-4">
-      <div class="card text-center shadow clickable-card" onclick="showAllEvents()">
-        <div class="card-body">
-          <h5>Total Events</h5>
+  <div class="row mt-3 g-4">
+    <div class="col-lg-4 col-md-6">
+      <div class="stat-card stat-card-total" onclick="showAllEvents()">
+        <div class="stat-card-body">
+          <h5><i class="bi bi-calendar-check"></i> Total Events</h5>
           <h2 id="totalEvents">0</h2>
-          <small class="text-muted">Click to view all events</small>
+          <small>All events in the system</small>
+          <div class="stat-indicator"></div>
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card text-center shadow clickable-card" onclick="showUpcomingEvents()">
-        <div class="card-body">
-          <h5>Upcoming</h5>
+    <div class="col-lg-4 col-md-6">
+      <div class="stat-card stat-card-upcoming" onclick="showUpcomingEvents()">
+        <div class="stat-card-body">
+          <h5><i class="bi bi-calendar-event"></i> Upcoming</h5>
           <h2 id="upcomingEvents">0</h2>
-          <small class="text-muted">Click to view upcoming events</small>
+          <small>Events scheduled for future</small>
+          <div class="stat-indicator"></div>
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card text-center shadow clickable-card" onclick="showCompletedEvents()">
-        <div class="card-body">
-          <h5>Completed</h5>
+    <div class="col-lg-4 col-md-6">
+      <div class="stat-card stat-card-completed" onclick="showCompletedEvents()">
+        <div class="stat-card-body">
+          <h5><i class="bi bi-check-circle"></i> Completed</h5>
           <h2 id="completedEvents">0</h2>
-          <small class="text-muted">Click to view completed events</small>
+          <small>Events that have finished</small>
+          <div class="stat-indicator"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6">
+      <div class="stat-card stat-card-cancelled" onclick="showCancelledEvents()">
+        <div class="stat-card-body">
+          <h5><i class="bi bi-x-circle"></i> Cancelled</h5>
+          <h2 id="cancelledEvents">0</h2>
+          <small>Events that have been cancelled</small>
+          <div class="stat-indicator"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6">
+      <div class="stat-card stat-card-postponed" onclick="showPostponedEvents()">
+        <div class="stat-card-body">
+          <h5><i class="bi bi-clock"></i> Postponed</h5>
+          <h2 id="postponedEvents">0</h2>
+          <small>Events rescheduled for later</small>
+          <div class="stat-indicator"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIE CHART SECTION -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h5>
+            <i class="bi bi-pie-chart-fill"></i> 
+            Event Statistics
+          </h5>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrapper">
+            <div class="chart-canvas-wrapper">
+              <canvas id="eventPieChart"></canvas>
+            </div>
+            <div class="chart-legend-wrapper" id="chartLegend">
+              <!-- Legend will be populated by JavaScript -->
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -90,26 +478,49 @@
     </div>
   </div>
 
-  <!-- QUICK STATS -->
+  <!-- QUICK ACTIONS -->
   <div class="row mt-4">
     <div class="col-12">
-      <div class="card shadow">
-        <div class="card-header">
-          <h5>Quick Actions</h5>
+      <div class="quick-actions-card">
+        <div class="quick-actions-header">
+          <h5>
+            <i class="bi bi-lightning-charge-fill"></i> 
+            Quick Actions
+          </h5>
         </div>
-        <div class="card-body">
-          <a href="events.html" class="btn btn-primary me-2">
-            <i class="bi bi-plus-circle"></i> Add New Event
-          </a>
-          <button onclick="showAllEvents()" class="btn btn-info me-2">
-            <i class="bi bi-list-ul"></i> View All Events
-          </button>
-          <button onclick="showUpcomingEvents()" class="btn btn-success me-2">
-            <i class="bi bi-calendar-event"></i> View Upcoming
-          </button>
-          <button onclick="showCompletedEvents()" class="btn btn-secondary">
-            <i class="bi bi-check-circle"></i> View Completed
-          </button>
+        <div class="quick-actions-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <a href="events.html" class="quick-action-btn btn-add">
+                <i class="bi bi-plus-circle-fill"></i> Add New Event
+              </a>
+            </div>
+            <div class="col-md-6">
+              <button onclick="showCompletedEvents()" class="quick-action-btn btn-completed">
+                <i class="bi bi-check-circle-fill"></i> View Completed
+              </button>
+            </div>
+            <div class="col-md-6">
+              <button onclick="showAllEvents()" class="quick-action-btn btn-all">
+                <i class="bi bi-list-ul"></i> View All Events
+              </button>
+            </div>
+            <div class="col-md-6">
+              <button onclick="showCancelledEvents()" class="quick-action-btn btn-cancelled">
+                <i class="bi bi-x-circle-fill"></i> View Cancelled
+              </button>
+            </div>
+            <div class="col-md-6">
+              <button onclick="showUpcomingEvents()" class="quick-action-btn btn-upcoming">
+                <i class="bi bi-calendar-event-fill"></i> View Upcoming
+              </button>
+            </div>
+            <div class="col-md-6">
+              <button onclick="showPostponedEvents()" class="quick-action-btn btn-postponed">
+                <i class="bi bi-clock-fill"></i> View Postponed
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -120,6 +531,8 @@
   © 2025 Event Management Dashboard | IMS566
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script src="jsstorage.js"></script>
 <script src="jsdashboard.js"></script>
 <script src="jsdarkmode.js"></script>
