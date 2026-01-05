@@ -1,7 +1,4 @@
-/**
- * Dashboard JavaScript
- * Handles dashboard statistics and event display
- */
+let eventPieChart = null;
 
 // Check login status
 function checkLogin() {
@@ -14,8 +11,180 @@ function checkLogin() {
 document.addEventListener('DOMContentLoaded', function() {
     checkLogin();
     updateDashboardStats();
+    createPieChart();
     setupDashboardListeners();
 });
+
+// Create pie chart with data labels
+function createPieChart() {
+    const ctx = document.getElementById('eventPieChart');
+    if (!ctx) return;
+    
+    const events = eventStorage.getAllEvents();
+    
+    // Count events by status
+    const statusCounts = {
+        'Upcoming': 0,
+        'Completed': 0,
+        'Cancelled': 0,
+        'Postponed': 0
+    };
+    
+    events.forEach(event => {
+        if (statusCounts.hasOwnProperty(event.status)) {
+            statusCounts[event.status]++;
+        }
+    });
+    
+    const chartData = [
+        statusCounts['Upcoming'],
+        statusCounts['Completed'],
+        statusCounts['Cancelled'],
+        statusCounts['Postponed']
+    ];
+    
+    const chartColors = [
+        '#06d6a0',  // Upcoming - Green
+        '#6c757d',  // Completed - Gray
+        '#ef476f',  // Cancelled - Red
+        '#ffd166'   // Postponed - Yellow
+    ];
+    
+    const chartLabels = ['Upcoming', 'Completed', 'Cancelled', 'Postponed'];
+    
+    // Create chart with datalabels plugin
+    eventPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: chartLabels,
+            datasets: [{
+                data: chartData,
+                backgroundColor: chartColors,
+                borderWidth: 3,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false  // Hide default legend
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed || 0;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                            return `${label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                },
+                datalabels: {
+                    color: '#ffffff',
+                    font: {
+                        weight: 'bold',
+                        size: 16
+                    },
+                    formatter: function(value, context) {
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                        // Only show label if value is greater than 0
+                        if (value > 0) {
+                            return value + '\n(' + percentage + '%)';
+                        }
+                        return '';
+                    },
+                    textAlign: 'center'
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+    
+    // Create custom legend
+    createCustomLegend(chartLabels, chartColors, chartData);
+}
+
+// Create custom legend on the right side
+function createCustomLegend(labels, colors, data) {
+    const legendContainer = document.getElementById('chartLegend');
+    if (!legendContainer) return;
+    
+    legendContainer.innerHTML = '';
+    
+    const total = data.reduce((a, b) => a + b, 0);
+    
+    labels.forEach((label, index) => {
+        const count = data[index];
+        const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+        
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item';
+        legendItem.style.cursor = 'pointer';
+        legendItem.innerHTML = `
+            <div class="legend-color" style="background-color: ${colors[index]};"></div>
+            <div class="legend-text">
+                <div class="legend-label">${label}</div>
+                <div class="legend-count">${count} events (${percentage}%)</div>
+            </div>
+        `;
+        
+        // Add click event to filter events by status
+        legendItem.addEventListener('click', () => {
+            if (label === 'Upcoming') {
+                showUpcomingEvents();
+            } else if (label === 'Completed') {
+                showCompletedEvents();
+            } else if (label === 'Cancelled') {
+                showCancelledEvents();
+            } else if (label === 'Postponed') {
+                showPostponedEvents();
+            }
+        });
+        
+        legendContainer.appendChild(legendItem);
+    });
+}
+
+// Update pie chart
+function updatePieChart() {
+    if (!eventPieChart) return;
+    
+    const events = eventStorage.getAllEvents();
+    
+    // Count events by status
+    const statusCounts = {
+        'Upcoming': 0,
+        'Completed': 0,
+        'Cancelled': 0,
+        'Postponed': 0
+    };
+    
+    events.forEach(event => {
+        if (statusCounts.hasOwnProperty(event.status)) {
+            statusCounts[event.status]++;
+        }
+    });
+    
+    const chartData = [
+        statusCounts['Upcoming'],
+        statusCounts['Completed'],
+        statusCounts['Cancelled'],
+        statusCounts['Postponed']
+    ];
+    
+    // Update chart data
+    eventPieChart.data.datasets[0].data = chartData;
+    eventPieChart.update();
+    
+    // Update custom legend
+    const chartLabels = ['Upcoming', 'Completed', 'Cancelled', 'Postponed'];
+    const chartColors = ['#06d6a0', '#6c757d', '#ef476f', '#ffd166'];
+    createCustomLegend(chartLabels, chartColors, chartData);
+}
 
 // Update all dashboard statistics
 function updateDashboardStats() {
@@ -24,11 +193,30 @@ function updateDashboardStats() {
         return;
     }
     
-    const counts = eventStorage.getEventCounts();
+    const events = eventStorage.getAllEvents();
+    
+    // Count events by status
+    const counts = {
+        total: events.length,
+        upcoming: events.filter(e => e.status === 'Upcoming').length,
+        completed: events.filter(e => e.status === 'Completed').length,
+        cancelled: events.filter(e => e.status === 'Cancelled').length,
+        postponed: events.filter(e => e.status === 'Postponed').length
+    };
     
     document.getElementById('totalEvents').textContent = counts.total;
     document.getElementById('upcomingEvents').textContent = counts.upcoming;
     document.getElementById('completedEvents').textContent = counts.completed;
+    
+    // Update cancelled and postponed if elements exist
+    const cancelledEl = document.getElementById('cancelledEvents');
+    const postponedEl = document.getElementById('postponedEvents');
+    
+    if (cancelledEl) cancelledEl.textContent = counts.cancelled;
+    if (postponedEl) postponedEl.textContent = counts.postponed;
+    
+    // Update pie chart
+    updatePieChart();
 }
 
 // Show all events
@@ -44,6 +232,16 @@ function showUpcomingEvents() {
 // Show completed events
 function showCompletedEvents() {
     showEventSection('Completed Events', eventStorage.getCompletedEvents());
+}
+
+// Show cancelled events
+function showCancelledEvents() {
+    showEventSection('Cancelled Events', eventStorage.getEventsByStatus('Cancelled'));
+}
+
+// Show postponed events
+function showPostponedEvents() {
+    showEventSection('Postponed Events', eventStorage.getEventsByStatus('Postponed'));
 }
 
 // Show event section with specific events
